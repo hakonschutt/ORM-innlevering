@@ -1,4 +1,4 @@
-package ORM-innlevering;
+package ORMinnlevering;
 
 /**
  * Hello world!
