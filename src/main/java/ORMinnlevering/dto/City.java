@@ -9,24 +9,25 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "City")
 public class City {
 
+    public static final String ID_FIELD_NAME = "ID";
     public static final String NAME_FIELD_NAME = "Name";
     public static final String COUNTRY_CODE_FIELD_NAME = "CountryCode";
     public static final String DISTRICT_FIELD_NAME = "District";
     public static final String POPULATION_FIELD_NAME = "Population";
 
-    @DatabaseField(generatedId = true, unique = true)
+    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true, unique = true)
     private int id;
 
-    @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = NAME_FIELD_NAME)
     private String name;
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, foreign = true, canBeNull = false)
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME)
     private String countryCode;
 
-    @DatabaseField(columnName = DISTRICT_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = DISTRICT_FIELD_NAME)
     private String district;
 
-    @DatabaseField(columnName = POPULATION_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = POPULATION_FIELD_NAME)
     private int population;
 
     public City() {}
