@@ -1,38 +1,42 @@
-package ORMinnlevering.dto;
+package orminnlevering.dto;
 
-import ORMinnlevering.dto.support.IsOfficial;
+import com.j256.ormlite.field.DataType;
+import orminnlevering.dto.support.IsOfficial;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.sql.Statement;
+
+import javax.xml.crypto.Data;
 
 /**
  * Created by hakonschutt on 05/11/2017.
  */
-@DatabaseTable(tableName = "CountryLanguage")
+@DatabaseTable(tableName = "countrylanguage")
 public class CountryLanguage {
 
     public static final String COUNTRY_CODE_FIELD_NAME = "CountryCode";
     public static final String LANGUAGE_FIELD_NAME = "Language";
-    public static final String IS_OFFICE_FIELD_NAME = "IsOffice";
+    public static final String IS_OFFICIAL_FIELD_NAME = "IsOfficial";
     public static final String PERCENTAGE_FIELD_NAME = "Percentage";
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, uniqueCombo = true, foreign = true, canBeNull = false)
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, uniqueCombo = true, canBeNull = false)
     private String countryCode;
 
     @DatabaseField(columnName = LANGUAGE_FIELD_NAME, uniqueCombo = true, canBeNull = false)
     private String language;
 
-    @DatabaseField(columnName = IS_OFFICE_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = IS_OFFICIAL_FIELD_NAME, dataType = DataType.ENUM_STRING)
     private IsOfficial isOfficial;
 
-    @DatabaseField(columnName = PERCENTAGE_FIELD_NAME, canBeNull = false)
-    private double percentage;
+    @DatabaseField(columnName = PERCENTAGE_FIELD_NAME)
+    private float percentage;
 
-    public CountryLanguage() {
-        // all persisted classes must define a no-arg
-        // constructor with at least package visibility
-    }
+    @DatabaseField(generatedId = true, version = true, persisted = false)
+    private int countryCodeLanguage;
 
-    public CountryLanguage(String countryCode, String language, IsOfficial isOfficial, double percentage) {
+    public CountryLanguage() {}
+
+    public CountryLanguage(String countryCode, String language, IsOfficial isOfficial, float percentage) {
         this.countryCode = countryCode;
         this.language = language;
         this.isOfficial = isOfficial;
@@ -63,11 +67,11 @@ public class CountryLanguage {
         this.isOfficial = isOfficial;
     }
 
-    public double getPercentage() {
+    public float getPercentage() {
         return percentage;
     }
 
-    public void setPercentage(double percentage) {
+    public void setPercentage(float percentage) {
         this.percentage = percentage;
     }
 

@@ -19,7 +19,7 @@
   </build>
   <packaging>jar</packaging>
 
-  <name>ORMinnlevering</name>
+  <name>orminnlevering</name>
   <url>http://maven.apache.org</url>
 
   <properties>

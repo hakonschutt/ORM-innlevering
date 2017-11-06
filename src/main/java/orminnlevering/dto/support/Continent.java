@@ -1,4 +1,4 @@
-package ORMinnlevering.dto.support;
+package orminnlevering.dto.support;
 
 /**
  * Created by hakonschutt on 05/11/2017.

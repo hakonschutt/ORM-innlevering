@@ -1,4 +1,4 @@
-package ORMinnlevering.Database;
+package orminnlevering.handler;
 
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;

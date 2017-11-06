@@ -1,4 +1,4 @@
-package ORMinnlevering.dto;
+package orminnlevering.dto;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * Created by hakonschutt on 05/11/2017.
  */
-@DatabaseTable(tableName = "City")
+@DatabaseTable(tableName = "city")
 public class City {
 
     public static final String ID_FIELD_NAME = "ID";
@@ -15,16 +15,16 @@ public class City {
     public static final String DISTRICT_FIELD_NAME = "District";
     public static final String POPULATION_FIELD_NAME = "Population";
 
-    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true, unique = true)
+    @DatabaseField(columnName = ID_FIELD_NAME, generatedId = true, canBeNull = false)
     private int id;
 
-    @DatabaseField(columnName = NAME_FIELD_NAME)
+    @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME)
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, canBeNull = false)
     private String countryCode;
 
-    @DatabaseField(columnName = DISTRICT_FIELD_NAME)
+    @DatabaseField(columnName = DISTRICT_FIELD_NAME, canBeNull = false)
     private String district;
 
     @DatabaseField(columnName = POPULATION_FIELD_NAME)
@@ -32,21 +32,14 @@ public class City {
 
     public City() {}
 
-    public City(int id, String name, String countryCode, String district, int population) {
-        this.id = id;
+    public City(String name, String countryCode, String district, int population) {
         this.name = name;
         this.countryCode = countryCode;
         this.district = district;
         this.population = population;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getId() { return id; }
 
     public String getName() {
         return name;

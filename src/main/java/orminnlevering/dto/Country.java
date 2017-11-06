@@ -1,13 +1,14 @@
-package ORMinnlevering.dto;
+package orminnlevering.dto;
 
-import ORMinnlevering.dto.support.Continent;
+import com.j256.ormlite.field.DataType;
+import orminnlevering.dto.support.Continent;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by hakonschutt on 05/11/2017.
  */
-@DatabaseTable(tableName = "Country")
+@DatabaseTable(tableName = "country")
 public class Country {
 
     public static final String COUNTRY_CODE_FIELD_NAME = "Code";
@@ -26,34 +27,34 @@ public class Country {
     public static final String CAPITAL_FIELD_NAME = "Capital";
     public static final String CODE_TWO_FIELD_NAME = "Code2";
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, unique = true, canBeNull = false)
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, id = true, canBeNull = false)
     private String code;
 
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = CONTINENT_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = CONTINENT_FIELD_NAME, dataType = DataType.ENUM_STRING)
     private Continent continent;
 
     @DatabaseField(columnName = REGION_FILED_NAME, canBeNull = false)
     private String region;
 
-    @DatabaseField(columnName = SURFACE_AREA_FIELD_NAME, canBeNull = false)
-    private double surfaceArea;
+    @DatabaseField(columnName = SURFACE_AREA_FIELD_NAME)
+    private float surfaceArea;
 
-    @DatabaseField(columnName = INDEPYEAR_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = INDEPYEAR_FIELD_NAME)
     private short independenceYear;
 
-    @DatabaseField(columnName = POPULATION_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = POPULATION_FIELD_NAME)
     private int population;
 
-    @DatabaseField(columnName = LIFE_EXPECTANCY_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = LIFE_EXPECTANCY_FIELD_NAME)
     private double lifeExpectancy;
 
-    @DatabaseField(columnName = GNP_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = GNP_FIELD_NAME)
     private double gnp;
 
-    @DatabaseField(columnName = GNP_OLD_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = GNP_OLD_FIELD_NAME)
     private double gnpOld;
 
     @DatabaseField(columnName = LOCAL_NAME_FIELD_NAME, canBeNull = false)
@@ -62,11 +63,11 @@ public class Country {
     @DatabaseField(columnName = GOVERNMENT_FORM_FIELD_NAME, canBeNull = false)
     private String governmentForm;
 
-    @DatabaseField(columnName = HEAD_OF_STATE_FIELD_NAME, canBeNull = false)
+    @DatabaseField(columnName = HEAD_OF_STATE_FIELD_NAME)
     private String headOfState;
 
-    @DatabaseField(columnName = CAPITAL_FIELD_NAME, canBeNull = false)
-    private int captial;
+    @DatabaseField(columnName = CAPITAL_FIELD_NAME)
+    private int capital;
 
     @DatabaseField(columnName = CODE_TWO_FIELD_NAME, canBeNull = false)
     private String secondCode;
@@ -74,7 +75,7 @@ public class Country {
     public Country() {
     }
 
-    public Country(String code, String name, Continent continent, String region, double surfaceArea, short independanceYear, int population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int captial, String secondCode) {
+    public Country(String code, String name, Continent continent, String region, float surfaceArea, short independanceYear, int population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int capital, String secondCode) {
         this.code = code;
         this.name = name;
         this.continent = continent;
@@ -88,7 +89,7 @@ public class Country {
         this.localName = localName;
         this.governmentForm = governmentForm;
         this.headOfState = headOfState;
-        this.captial = captial;
+        this.capital = capital;
         this.secondCode = secondCode;
     }
 
@@ -128,7 +129,7 @@ public class Country {
         return surfaceArea;
     }
 
-    public void setSurfaceArea(double surfaceArea) {
+    public void setSurfaceArea(float surfaceArea) {
         this.surfaceArea = surfaceArea;
     }
 
@@ -196,12 +197,12 @@ public class Country {
         this.headOfState = headOfState;
     }
 
-    public int getCaptial() {
-        return captial;
+    public int getCapital() {
+        return capital;
     }
 
-    public void setCaptial(int captial) {
-        this.captial = captial;
+    public void setCapital(int capital) {
+        this.capital = capital;
     }
 
     public String getSecondCode() {
