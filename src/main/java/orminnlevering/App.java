@@ -46,9 +46,7 @@ public class App {
             CountryLanguage countryLanguage = createLanguage();
 
             countryDao.createIfNotExists(country);
-            System.out.println("_Hell");
             cityDao.createIfNotExists(city);
-            System.out.println("L: ORWLE");
             countryLanguageDao.create(countryLanguage);
 
             List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "NOR");
@@ -86,6 +84,21 @@ public class App {
             DeleteBuilder<Country, String> countryDelete = countryDao.deleteBuilder();
             countryDelete.where().eq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
             countryDelete.delete();
+
+        } catch (SQLException | IOException e){
+            System.out.println("Unable to continue.");
+        }
+
+        try (ConnectionSource connectionSource = Connection.getConnection()) {
+            if (connectionSource == null)
+                throw new SQLException();
+
+            List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "NOR");
+
+            for (City c : cities){
+                String overview = String.format("%-8s %-20s %-8s %-20s %-15s", c.getId(), c.getName(), c.getCountryCode(), c.getDistrict(), c.getPopulation());
+                System.out.println(overview);
+            }
 
         } catch (SQLException | IOException e){
             System.out.println("Unable to continue.");
