@@ -79,7 +79,7 @@ public class PrintHandler {
             System.out.println(String.format(
                     CITY_FORMAT,
                     e.getName(),
-                    e.getCountryCode(),
+                    e.getCountry().getCode(),
                     e.getDistrict(),
                     e.getPopulation()
             ));
@@ -103,7 +103,7 @@ public class PrintHandler {
         countryLanguageList.stream().forEach(e -> {
             System.out.println(String.format(
                     COUNTRY_LANGUAGE_FORMAT,
-                    e.getCountryCode(),
+                    e.getCountry().getCode(),
                     e.getLanguage(),
                     e.getIsOfficial() == IsOfficial.T ? "True" : "False",
                     e.getPercentage()

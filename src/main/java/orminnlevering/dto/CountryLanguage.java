@@ -19,8 +19,8 @@ public class CountryLanguage {
     public static final String IS_OFFICIAL_FIELD_NAME = "IsOfficial";
     public static final String PERCENTAGE_FIELD_NAME = "Percentage";
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, uniqueCombo = true, canBeNull = false)
-    private String countryCode;
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, uniqueCombo = true, canBeNull = false, foreign = true, foreignColumnName = Country.COUNTRY_CODE_FIELD_NAME)
+    private Country country;
 
     @DatabaseField(columnName = LANGUAGE_FIELD_NAME, uniqueCombo = true, canBeNull = false)
     private String language;
@@ -31,24 +31,24 @@ public class CountryLanguage {
     @DatabaseField(columnName = PERCENTAGE_FIELD_NAME)
     private float percentage;
 
-    @DatabaseField(generatedId = true, version = true, persisted = false)
+    @DatabaseField(generatedId = true, persisted = false)
     private int countryCodeLanguage;
 
     public CountryLanguage() {}
 
-    public CountryLanguage(String countryCode, String language, IsOfficial isOfficial, float percentage) {
-        this.countryCode = countryCode;
+    public CountryLanguage(Country country, String language, IsOfficial isOfficial, float percentage) {
+        this.country = country;
         this.language = language;
         this.isOfficial = isOfficial;
         this.percentage = percentage;
     }
 
-    public String getCountryCode() {
-        return countryCode;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public String getLanguage() {
@@ -77,7 +77,7 @@ public class CountryLanguage {
 
     @Override
     public int hashCode() {
-        return (countryCode + language).hashCode();
+        return (country.getCode() + language).hashCode();
     }
 
     @Override
@@ -85,6 +85,6 @@ public class CountryLanguage {
         if (other == null || other.getClass() != getClass()) {
             return false;
         }
-        return (countryCode + language).equals((((CountryLanguage) other).countryCode) + (((CountryLanguage) other).language));
+        return (country.getCode() + language).equals((((CountryLanguage) other).country.getCode()) + (((CountryLanguage) other).language));
     }
 }

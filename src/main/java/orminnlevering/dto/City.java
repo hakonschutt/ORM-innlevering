@@ -21,8 +21,8 @@ public class City {
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, canBeNull = false)
-    private String countryCode;
+    @DatabaseField(columnName = COUNTRY_CODE_FIELD_NAME, canBeNull = false, foreign = true, foreignColumnName = Country.COUNTRY_CODE_FIELD_NAME)
+    private Country country;
 
     @DatabaseField(columnName = DISTRICT_FIELD_NAME, canBeNull = false)
     private String district;
@@ -32,9 +32,9 @@ public class City {
 
     public City() {}
 
-    public City(String name, String countryCode, String district, int population) {
+    public City(String name, Country country, String district, int population) {
         this.name = name;
-        this.countryCode = countryCode;
+        this.country = country;
         this.district = district;
         this.population = population;
     }
@@ -49,12 +49,12 @@ public class City {
         this.name = name;
     }
 
-    public String getCountryCode() {
-        return countryCode;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public String getDistrict() {

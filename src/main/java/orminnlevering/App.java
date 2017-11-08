@@ -20,9 +20,7 @@ import orminnlevering.dto.support.Continent;
 import orminnlevering.dto.support.IsOfficial;
 import orminnlevering.handler.Connection;
 import orminnlevering.handler.PrintHandler;
-
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Hello world!
@@ -102,8 +100,8 @@ public class App {
 
     public void initDao(ConnectionSource connection) {
         try {
-            cityDao = DaoManager.createDao(connection, City.class);
             countryDao = DaoManager.createDao(connection, Country.class);
+            cityDao = DaoManager.createDao(connection, City.class);
             countryLanguageDao = DaoManager.createDao(connection, CountryLanguage.class);
         } catch (SQLException e) {
             System.out.println("Unable to setup dao for city, Country and CountryLanguage class.");
@@ -129,13 +127,13 @@ public class App {
             PrintHandler.printCountryList(countryItem);
 
             System.out.println("Creating city in the newly founded country New Land");
-            City city = createCity();
+            City city = createCity(country);
             cityDao.createIfNotExists(city);
             List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCityList(cities);
 
             System.out.println("Creating language in the newly founded country New Land");
-            CountryLanguage countryLanguage = createLanguage();
+            CountryLanguage countryLanguage = createLanguage(country);
             countryLanguageDao.create(countryLanguage);
             List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCountryLanguageList(cl);
@@ -160,9 +158,9 @@ public class App {
 
     public void deleteElements(){
         try {
-            /*DeleteBuilder<City, Integer> cityDelete = cityDao.deleteBuilder();
+            DeleteBuilder<City, Integer> cityDelete = cityDao.deleteBuilder();
             cityDelete.where().eq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-            cityDelete.delete();*/
+            cityDelete.delete();
 
             DeleteBuilder<CountryLanguage, Integer> countryLanguageDelete = countryLanguageDao.deleteBuilder();
             countryLanguageDelete.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
@@ -174,16 +172,6 @@ public class App {
         } catch (SQLException e){
             System.out.println("Unable to create elements.");
         }
-    }
-
-    public City createCity(){
-        City city = new City();
-        city.setCountryCode("XNL");
-        city.setDistrict("North Land");
-        city.setName("New city");
-        city.setPopulation(200_000);
-
-        return city;
     }
 
     public Country createCountry(){
@@ -207,9 +195,19 @@ public class App {
         return country;
     }
 
-    public CountryLanguage createLanguage(){
+    public City createCity(Country country){
+        City city = new City();
+        city.setCountry(country);
+        city.setDistrict("North Land");
+        city.setName("New city");
+        city.setPopulation(200_000);
+
+        return city;
+    }
+
+    public CountryLanguage createLanguage(Country country){
         CountryLanguage lang = new CountryLanguage();
-        lang.setCountryCode("XNL");
+        lang.setCountry(country);
         lang.setLanguage("NewLang");
         lang.setIsOfficial(IsOfficial.T);
         lang.setPercentage((float) 13.4);
@@ -218,7 +216,7 @@ public class App {
     }
 
     public static void main( String[] args ) throws Exception {
-        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
+        //System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
         new App().main();
     }
 }
