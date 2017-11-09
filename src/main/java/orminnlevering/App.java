@@ -1,8 +1,12 @@
 package orminnlevering;
 
-import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import orminnlevering.dto.City;
+import orminnlevering.dto.Country;
+import orminnlevering.dto.CountryLanguage;
+import orminnlevering.dto.support.Continent;
+import orminnlevering.dto.support.IsOfficial;
+import orminnlevering.handler.Connection;
+import orminnlevering.handler.PrintHandler;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -11,16 +15,11 @@ import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.j256.ormlite.logger.LocalLog;
-import orminnlevering.dto.City;
-import orminnlevering.dto.Country;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.UpdateBuilder;
-import orminnlevering.dto.CountryLanguage;
-import orminnlevering.dto.support.Continent;
-import orminnlevering.dto.support.IsOfficial;
-import orminnlevering.handler.Connection;
-import orminnlevering.handler.PrintHandler;
+
 import java.util.List;
+import java.util.Scanner;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Hello world!
@@ -39,62 +38,47 @@ public class App {
 
             System.out.println("This program will show execution of CRUD operation with OrmLite.");
             initDao(connectionSource);
+            System.out.println("To show simple crud methods will start by creating elements, updating them and finally deleting them.");
+            int ans = getUserAnswer();
+
             createTables(connectionSource);
+            System.out.println();
+            createElements();
 
-            System.out.println("To show simple crud methods will start by creating a element, updating it and finally deleting it.");
-            //createElements();
-            //updateElements();
-            deleteElements();
+            if (ans > 1) {
+                updateElements();
 
-            /*List<Country> countries = countryDao.queryForEq(Country.CONTINENT_FIELD_NAME, Continent.Europe);
-            PrintHandler.printCountryList(countries);*/
+                if (ans > 2) {
+                    tryDeletingCountry();
+                    deleteElements();
+                    System.out.println();
+                    System.out.println("Trying to query for elements to check if they still exists.");
+                    List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
 
-            //List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
-            //PrintHandler.printCountryLanguageList(cl);
-
-
-            /*List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "NOR");
-
-            List<CountryLanguage> countryLanguages = countryLanguageDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-
-            System.out.println("Got it! " + countryLanguages.get(0).getLanguage());
-
-            UpdateBuilder<CountryLanguage, Integer> updateBuilder = countryLanguageDao.updateBuilder();
-            updateBuilder.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
-            updateBuilder.updateColumnValue(CountryLanguage.LANGUAGE_FIELD_NAME, "NewerLanguage");
-            updateBuilder.update();
-
-            List<CountryLanguage> countryLanguagesTwo = countryLanguageDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-
-            System.out.println("Got it! " + countryLanguagesTwo.get(0).getLanguage());
-
-            DeleteBuilder<CountryLanguage, Integer> deleteBuilder = countryLanguageDao.deleteBuilder();
-            deleteBuilder.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
-            deleteBuilder.delete();
-
-            List<CountryLanguage> countryLanguagesThree = countryLanguageDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-
-            System.out.println("Size of query = " + countryLanguagesThree.size());
-
-            DeleteBuilder<City, Integer> cityDelete = cityDao.deleteBuilder();
-            cityDelete.where().eq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-            cityDelete.delete();
-
-            DeleteBuilder<Country, String> countryDelete = countryDao.deleteBuilder();
-            countryDelete.where().eq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
-            countryDelete.delete();*/
-
-            /*List<Country> countries = countryDao.queryForEq(Country.CONTINENT_FIELD_NAME, Continent.Europe);
-            PrintHandler.printCountryList(countries);
-
-            /*List<CountryLanguage> lang = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "NOR");
-            PrintHandler.printCountryLanguageList(lang);*/
-
-            /*List<City> cityList = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "NOR");
-            PrintHandler.printCityList(cityList);*/
-
+                    if (cities.size() == 0){
+                        System.out.println("No result was found for country code XNL!");
+                    }
+                }
+            }
         } catch (SQLException | IOException e){
             System.out.println("Unable to continue.");
+        }
+    }
+
+    public int getUserAnswer(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("(1) Create/Read");
+        System.out.println("(2) Create/Read/Update");
+        System.out.println("(2) Create/Read/Update/Delete");
+
+        while(true){
+            System.out.print("What CRUD commands should we execute? ");
+            int ans = sc.nextInt();
+            if(ans > 0 || ans < 4){
+                return ans;
+            } else {
+                System.out.println("Invalid answer. Try again.");
+            }
         }
     }
 
@@ -110,6 +94,7 @@ public class App {
 
     public void createTables(ConnectionSource connection) throws SQLException {
         try {
+            System.out.println("Creating tables if they don't exists.");
             TableUtils.createTableIfNotExists(connection, Country.class);
             TableUtils.createTableIfNotExists(connection, City.class);
             TableUtils.createTableIfNotExists(connection, CountryLanguage.class);
@@ -126,15 +111,19 @@ public class App {
             List<Country> countryItem = countryDao.queryForEq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCountryList(countryItem);
 
-            System.out.println("Creating city in the newly founded country New Land");
+            System.out.println("Creating cities in the newly founded country New Land");
             City city = createCity(country);
             cityDao.createIfNotExists(city);
+            City cityTwo = createCityTwo(country);
+            cityDao.createIfNotExists(cityTwo);
             List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCityList(cities);
 
-            System.out.println("Creating language in the newly founded country New Land");
+            System.out.println("Creating languages in the newly founded country New Land");
             CountryLanguage countryLanguage = createLanguage(country);
             countryLanguageDao.create(countryLanguage);
+            CountryLanguage countryLanguageTwo = createLanguageTwo(country);
+            countryLanguageDao.create(countryLanguageTwo);
             List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCountryLanguageList(cl);
         } catch (SQLException e){
@@ -144,33 +133,59 @@ public class App {
 
     public void updateElements(){
         try {
+            System.out.println("Updating language with a new language name.");
             UpdateBuilder<CountryLanguage, Integer> updateBuilder = countryLanguageDao.updateBuilder();
-            updateBuilder.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
+            updateBuilder.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL")
+            .and().eq(CountryLanguage.LANGUAGE_FIELD_NAME, "NewLang");
             updateBuilder.updateColumnValue(CountryLanguage.LANGUAGE_FIELD_NAME, "NewerLanguage");
             updateBuilder.update();
             List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
             PrintHandler.printCountryLanguageList(cl);
 
+            System.out.println("Updating city with a new name.");
+            UpdateBuilder<City, Integer> updateBuilderCity = cityDao.updateBuilder();
+            updateBuilderCity.where().eq(City.COUNTRY_CODE_FIELD_NAME, "XNL")
+                    .and().eq(City.NAME_FIELD_NAME, "Old city");
+            updateBuilderCity.updateColumnValue(City.NAME_FIELD_NAME, "Oldest city");
+            updateBuilderCity.update();
+            List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
+            PrintHandler.printCityList(cities);
+
         } catch (SQLException e){
-            System.out.println("Unable to create elements.");
+            System.out.println("Unable to update elements.");
+        }
+    }
+
+    public void tryDeletingCountry(){
+        try {
+            System.out.println("Trying to delete XNL from the country table.");
+            DeleteBuilder<Country, String> countryDelete = countryDao.deleteBuilder();
+            countryDelete.where().eq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
+            countryDelete.delete();
+        } catch (SQLException e){
+            System.out.println("Unable to delete Country due to foreign keys.\nYou have to delete the rows from country language and city first.");
+            System.out.println();
         }
     }
 
     public void deleteElements(){
         try {
+            System.out.println("Deleting city elements.");
             DeleteBuilder<City, Integer> cityDelete = cityDao.deleteBuilder();
             cityDelete.where().eq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
             cityDelete.delete();
 
+            System.out.println("Deleting language elements");
             DeleteBuilder<CountryLanguage, Integer> countryLanguageDelete = countryLanguageDao.deleteBuilder();
             countryLanguageDelete.where().eq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
             countryLanguageDelete.delete();
 
+            System.out.println("Deleting country element.");
             DeleteBuilder<Country, String> countryDelete = countryDao.deleteBuilder();
             countryDelete.where().eq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
             countryDelete.delete();
         } catch (SQLException e){
-            System.out.println("Unable to create elements.");
+            System.out.println("Unable to delete elements.");
         }
     }
 
@@ -178,7 +193,7 @@ public class App {
         Country country = new Country();
         country.setCode("XNL");
         country.setName("New Land");
-        country.setContinent(Continent.Oceania);
+        country.setContinent(Continent.SOUTH_AMERICA.displayName());
         country.setRegion("North new");
         country.setSurfaceArea((float) 3421.00);
         country.setIndependenceYear((short)2017);
@@ -205,6 +220,16 @@ public class App {
         return city;
     }
 
+    public City createCityTwo(Country country){
+        City city = new City();
+        city.setCountry(country);
+        city.setDistrict("South Land");
+        city.setName("Old city");
+        city.setPopulation(150_000);
+
+        return city;
+    }
+
     public CountryLanguage createLanguage(Country country){
         CountryLanguage lang = new CountryLanguage();
         lang.setCountry(country);
@@ -215,8 +240,18 @@ public class App {
         return lang;
     }
 
+    public CountryLanguage createLanguageTwo(Country country){
+        CountryLanguage lang = new CountryLanguage();
+        lang.setCountry(country);
+        lang.setLanguage("OldLang");
+        lang.setIsOfficial(IsOfficial.T);
+        lang.setPercentage((float) 87.6);
+
+        return lang;
+    }
+
     public static void main( String[] args ) throws Exception {
-        //System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
+        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
         new App().main();
     }
 }

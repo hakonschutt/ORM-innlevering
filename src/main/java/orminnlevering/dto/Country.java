@@ -33,8 +33,8 @@ public class Country {
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = CONTINENT_FIELD_NAME, dataType = DataType.ENUM_STRING)
-    private Continent continent;
+    @DatabaseField(columnName = CONTINENT_FIELD_NAME)
+    private String continent;
 
     @DatabaseField(columnName = REGION_FILED_NAME, canBeNull = false)
     private String region;
@@ -75,7 +75,7 @@ public class Country {
     public Country() {
     }
 
-    public Country(String code, String name, Continent continent, String region, float surfaceArea, short independanceYear, int population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int capital, String secondCode) {
+    public Country(String code, String name, String continent, String region, float surfaceArea, short independanceYear, int population, double lifeExpectancy, double gnp, double gnpOld, String localName, String governmentForm, String headOfState, int capital, String secondCode) {
         this.code = code;
         this.name = name;
         this.continent = continent;
@@ -109,11 +109,11 @@ public class Country {
         this.name = name;
     }
 
-    public Continent getContinent() {
+    public String getContinent() {
         return continent;
     }
 
-    public void setContinent(Continent continent) {
+    public void setContinent(String continent) {
         this.continent = continent;
     }
 

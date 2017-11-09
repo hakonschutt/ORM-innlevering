@@ -15,10 +15,10 @@ public class PrintHandler {
     private static final String CITY_FORMAT = "| %-20s| %-15s| %-25s| %-12s|";
     private static final String COUNTRY_LANGUAGE_FORMAT = "| %-15s| %-15s| %-12s| %-12s|";
 
-    private static String printLine(String intro){
+    private static String printLine(String intro, String separator){
         String line = "";
         for (int i = 0; i < intro.length(); i++){
-            line += "-";
+            line += separator;
         }
 
         return line;
@@ -34,10 +34,10 @@ public class PrintHandler {
                 "Government form", "Capital", "Second code"
         );
 
-        String line = printLine(introString);
+        String line = printLine(introString, "-");
         System.out.println(line);
         System.out.println(introString);
-        System.out.println(line);
+        System.out.println(printLine(introString, "="));
 
         countryList.stream().forEach(e -> {
             System.out.println(
@@ -70,10 +70,10 @@ public class PrintHandler {
                 "Name", "Country code", "District", "Population"
         );
 
-        String line = printLine(introString);
+        String line = printLine(introString, "-");
         System.out.println(line);
         System.out.println(introString);
-        System.out.println(line);
+        System.out.println(printLine(introString, "="));
 
         cityList.stream().forEach(e -> {
             System.out.println(String.format(
@@ -95,10 +95,10 @@ public class PrintHandler {
                 "Country code", "Language", "Is official", "Percentage"
         );
 
-        String line = printLine(introString);
+        String line = printLine(introString, "-");
         System.out.println(line);
         System.out.println(introString);
-        System.out.println(line);
+        System.out.println(printLine(introString, "="));
 
         countryLanguageList.stream().forEach(e -> {
             System.out.println(String.format(
