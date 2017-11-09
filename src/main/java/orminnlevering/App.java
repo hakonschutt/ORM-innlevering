@@ -14,6 +14,7 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.j256.ormlite.table.TableInfo;
 import com.j256.ormlite.logger.LocalLog;
 
 import java.util.List;
@@ -26,9 +27,9 @@ import java.sql.SQLException;
  *
  */
 public class App {
-    private Dao<City, Integer> cityDao;
-    private Dao<Country, String> countryDao;
-    private Dao<CountryLanguage, Integer> countryLanguageDao;
+    public Dao<City, Integer> cityDao;
+    public Dao<Country, String> countryDao;
+    public Dao<CountryLanguage, Integer> countryLanguageDao;
 
     public void main() {
 
@@ -44,9 +45,11 @@ public class App {
             createTables(connectionSource);
             System.out.println();
             createElements();
+            printElements();
 
             if (ans > 1) {
                 updateElements();
+                printElements();
 
                 if (ans > 2) {
                     tryDeletingCountry();
@@ -103,29 +106,41 @@ public class App {
         }
     }
 
+    public void printElements(){
+        try {
+            System.out.println("Print country New Land");
+            List<Country> countryItem = countryDao.queryForEq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
+            PrintHandler.printCountryList(countryItem);
+
+            System.out.println("Printing cities in the newly founded country New Land");
+            List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
+            PrintHandler.printCityList(cities);
+
+            System.out.println("Printing languages in the newly founded country New Land");
+            List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
+            PrintHandler.printCountryLanguageList(cl);
+        } catch (SQLException e){
+            System.out.println("Unable to print elements.");
+        }
+    }
+
     public void createElements() {
         try {
             System.out.println("Creating country New Land");
             Country country = createCountry();
             countryDao.createIfNotExists(country);
-            List<Country> countryItem = countryDao.queryForEq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
-            PrintHandler.printCountryList(countryItem);
 
             System.out.println("Creating cities in the newly founded country New Land");
             City city = createCity(country);
             cityDao.createIfNotExists(city);
             City cityTwo = createCityTwo(country);
             cityDao.createIfNotExists(cityTwo);
-            List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-            PrintHandler.printCityList(cities);
 
             System.out.println("Creating languages in the newly founded country New Land");
             CountryLanguage countryLanguage = createLanguage(country);
             countryLanguageDao.create(countryLanguage);
             CountryLanguage countryLanguageTwo = createLanguageTwo(country);
             countryLanguageDao.create(countryLanguageTwo);
-            List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
-            PrintHandler.printCountryLanguageList(cl);
         } catch (SQLException e){
             System.out.println("Unable to create elements.");
         }
@@ -139,8 +154,6 @@ public class App {
             .and().eq(CountryLanguage.LANGUAGE_FIELD_NAME, "NewLang");
             updateBuilder.updateColumnValue(CountryLanguage.LANGUAGE_FIELD_NAME, "NewerLanguage");
             updateBuilder.update();
-            List<CountryLanguage> cl = countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
-            PrintHandler.printCountryLanguageList(cl);
 
             System.out.println("Updating city with a new name.");
             UpdateBuilder<City, Integer> updateBuilderCity = cityDao.updateBuilder();
@@ -148,8 +161,6 @@ public class App {
                     .and().eq(City.NAME_FIELD_NAME, "Old city");
             updateBuilderCity.updateColumnValue(City.NAME_FIELD_NAME, "Oldest city");
             updateBuilderCity.update();
-            List<City> cities = cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
-            PrintHandler.printCityList(cities);
 
         } catch (SQLException e){
             System.out.println("Unable to update elements.");
