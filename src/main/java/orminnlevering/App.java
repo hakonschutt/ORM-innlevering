@@ -69,7 +69,7 @@ public class App {
         Scanner sc = new Scanner(System.in);
         System.out.println("(1) Create/Read");
         System.out.println("(2) Create/Read/Update");
-        System.out.println("(2) Create/Read/Update/Delete");
+        System.out.println("(3) Create/Read/Update/Delete");
 
         while(true){
             System.out.print("What CRUD commands should we execute? ");
