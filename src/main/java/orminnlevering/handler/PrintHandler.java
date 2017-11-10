@@ -8,6 +8,8 @@ import orminnlevering.dto.support.IsOfficial;
 import java.util.List;
 
 /**
+ * Print handler prints the result given by the main App class.
+ *
  * Created by hakonschutt on 07/11/2017.
  */
 public class PrintHandler {
@@ -15,6 +17,12 @@ public class PrintHandler {
     private static final String CITY_FORMAT = "| %-20s| %-15s| %-25s| %-12s|";
     private static final String COUNTRY_LANGUAGE_FORMAT = "| %-15s| %-15s| %-12s| %-12s|";
 
+    /**
+     * Creates a line that is as long as the introString.
+     * @param intro
+     * @param separator
+     * @return
+     */
     private static String printLine(String intro, String separator){
         String line = "";
         for (int i = 0; i < intro.length(); i++){
@@ -24,6 +32,10 @@ public class PrintHandler {
         return line;
     }
 
+    /**
+     * Prints a tables based of a Country list
+     * @param countryList
+     */
     public static void printCountryList(List<Country> countryList){
         String introString = String.format(
                 COUNTRY_FORMAT,
@@ -64,6 +76,10 @@ public class PrintHandler {
         System.out.println();
     }
 
+    /**
+     * Prints a table based of City list
+     * @param cityList
+     */
     public static void printCityList(List<City> cityList){
         String introString = String.format(
                 CITY_FORMAT,
@@ -89,6 +105,10 @@ public class PrintHandler {
         System.out.println();
     }
 
+    /**
+     * Prints a table based of CountryLanguage list
+     * @param countryLanguageList
+     */
     public static void printCountryLanguageList(List<CountryLanguage> countryLanguageList){
         String introString = String.format(
                 COUNTRY_LANGUAGE_FORMAT,

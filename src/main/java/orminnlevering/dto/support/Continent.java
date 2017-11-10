@@ -1,7 +1,7 @@
 package orminnlevering.dto.support;
 
 /**
- * I would have liked to use an enum here, but it wont work when the string hava spaces on south and north america.
+ * Continent enum. This enum is based of display name. The enum returns a string value since the continents have spaces in between the words.
  * Created by hakonschutt on 05/11/2017.
  */
 public enum Continent {
@@ -15,9 +15,17 @@ public enum Continent {
 
     private String displayName;
 
+    /**
+     * Constructor for continent enum
+     * @param displayName
+     */
     Continent(String displayName) {
         this.displayName = displayName;
     }
 
+    /**
+     * Returns the enum string displayname.
+     * @return
+     */
     public String displayName() { return displayName; }
 }

@@ -13,7 +13,6 @@ import orminnlevering.handler.Connection;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.After;
@@ -34,27 +33,24 @@ public class AppTest{
     public void setup() throws SQLException, IOException {
         System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
         app = new App();
-        connectionSource = Connection.getConnection();
+        connectionSource = testConnection();
         app.initDao(connectionSource);
         app.createTables(connectionSource);
-
-        //setDBName();
     }
 
     @After
     public void tearDown() throws IOException, SQLException {
-        //TableUtils.dropTable(connectionSource, City.class, false);
-        //TableUtils.dropTable(connectionSource, Country.class, false);
-        //TableUtils.dropTable(connectionSource, CountryLanguage.class, false);
+        TableUtils.dropTable(connectionSource, City.class, false);
+        TableUtils.dropTable(connectionSource, Country.class, false);
+        TableUtils.dropTable(connectionSource, CountryLanguage.class, false);
 
         connectionSource.close();
-
-        //reSetDBName();
     }
 
     @Test
     public void connectionNotNullTest(){
-        assertNotNull(connectionSource);
+        ConnectionSource connection = Connection.getConnection();
+        assertNotNull(connection);
     }
 
     @Test
@@ -139,17 +135,12 @@ public class AppTest{
         assertTrue(cl.size() == 0);
     }
 
-    /*public void setDBName() throws IOException {
-        Properties properties = new Properties();
-        InputStream input = new FileInputStream("data.properties");
-        properties.load(input);
-        dbName = properties.getProperty("db");
-        properties.setProperty("db", "worldORMtest");
+    public ConnectionSource testConnection(){
+        try {
+            return new JdbcConnectionSource("jdbc:h2:~/test", "sa", "");
+        } catch (SQLException e){
+            System.out.println("Unable to connect!");
+            return null;
+        }
     }
-
-    public void reSetDBName() throws IOException {
-        Properties properties = new Properties();
-        OutputStream outputStream = new FileOutputStream("data.properties");
-        properties.setProperty("db", dbName);
-    }*/
 }

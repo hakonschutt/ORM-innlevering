@@ -1,11 +1,10 @@
 package orminnlevering.dto;
 
-import com.j256.ormlite.field.DataType;
-import orminnlevering.dto.support.Continent;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
+ * Class for country table.
  * Created by hakonschutt on 05/11/2017.
  */
 @DatabaseTable(tableName = "country")

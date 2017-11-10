@@ -10,11 +10,16 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
+ * Main Connection class. Used to return a connection to the database based of properties file.
  * Created by hakonschutt on 05/11/2017.
  */
 public class Connection {
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/";
 
+    /**
+     * Initiates a database connection and returns it.
+     * @return
+     */
     public static ConnectionSource getConnection(){
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream("data.properties")){

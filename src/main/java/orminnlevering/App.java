@@ -14,7 +14,6 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.j256.ormlite.table.TableInfo;
 import com.j256.ormlite.logger.LocalLog;
 
 import java.util.List;
@@ -23,7 +22,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Hello world!
+ * This class initates alle the DAOs needed to run CRUD operations through ORM.
+ * The user is given a simple choice between CRUD operations and can execute either:
+ * Create/read
+ * Create/read/updater
+ * Create/read/update/delete
  *
  */
 public class App {
@@ -31,8 +34,10 @@ public class App {
     public Dao<Country, String> countryDao;
     public Dao<CountryLanguage, Integer> countryLanguageDao;
 
+    /**
+     * Main method initats the start of the program. This creates all tables, askes for user input and executes the necessary operations.
+     */
     public void main() {
-
         try (ConnectionSource connectionSource = Connection.getConnection()) {
             if (connectionSource == null)
                 throw new SQLException();
@@ -68,6 +73,11 @@ public class App {
         }
     }
 
+    /**
+     * Allows the user to enter a operation sequence.
+     * It returns the operation sequence to execute.
+     * @return
+     */
     public int getUserAnswer(){
         Scanner sc = new Scanner(System.in);
         System.out.println("(1) Create/Read");
@@ -85,6 +95,10 @@ public class App {
         }
     }
 
+    /**
+     * Initates DAOs for the ORM classes.
+     * @param connection
+     */
     public void initDao(ConnectionSource connection) {
         try {
             countryDao = DaoManager.createDao(connection, Country.class);
@@ -95,6 +109,11 @@ public class App {
         }
     }
 
+    /**
+     * Creates necessary tables for the ORM to work.
+     * @param connection
+     * @throws SQLException
+     */
     public void createTables(ConnectionSource connection) throws SQLException {
         try {
             System.out.println("Creating tables if they don't exists.");
@@ -106,6 +125,9 @@ public class App {
         }
     }
 
+    /**
+     * Prints elements from country, city and countrylanguage tables with countryCode as XNL.
+     */
     public void printElements(){
         try {
             System.out.println("Print country New Land");
@@ -124,6 +146,9 @@ public class App {
         }
     }
 
+    /**
+     * Creates the necessary elements for the tables.
+     */
     public void createElements() {
         try {
             System.out.println("Creating country New Land");
@@ -146,6 +171,9 @@ public class App {
         }
     }
 
+    /**
+     * Updates the uploaded elements from the createElements method.
+     */
     public void updateElements(){
         try {
             System.out.println("Updating language with a new language name.");
@@ -167,6 +195,9 @@ public class App {
         }
     }
 
+    /**
+     * Tries deleting country. This throws an SQLException since country has relations to city and country language.
+     */
     public void tryDeletingCountry(){
         try {
             System.out.println("Trying to delete XNL from the country table.");
@@ -179,6 +210,9 @@ public class App {
         }
     }
 
+    /**
+     * Deletes all elements with countrycode as XNL
+     */
     public void deleteElements(){
         try {
             System.out.println("Deleting city elements.");
@@ -200,6 +234,10 @@ public class App {
         }
     }
 
+    /**
+     * Creates a simple country from the country class
+     * @return
+     */
     public Country createCountry(){
         Country country = new Country();
         country.setCode("XNL");
@@ -221,6 +259,11 @@ public class App {
         return country;
     }
 
+    /**
+     * Creates a simple City
+     * @param country
+     * @return
+     */
     public City createCity(Country country){
         City city = new City();
         city.setCountry(country);
@@ -231,6 +274,11 @@ public class App {
         return city;
     }
 
+    /**
+     * creates another simple city
+     * @param country
+     * @return
+     */
     public City createCityTwo(Country country){
         City city = new City();
         city.setCountry(country);
@@ -241,6 +289,11 @@ public class App {
         return city;
     }
 
+    /**
+     * creates a countryLanguage
+     * @param country
+     * @return
+     */
     public CountryLanguage createLanguage(Country country){
         CountryLanguage lang = new CountryLanguage();
         lang.setCountry(country);
@@ -251,6 +304,11 @@ public class App {
         return lang;
     }
 
+    /**
+     * creates a countryLanguage
+     * @param country
+     * @return
+     */
     public CountryLanguage createLanguageTwo(Country country){
         CountryLanguage lang = new CountryLanguage();
         lang.setCountry(country);
@@ -261,6 +319,11 @@ public class App {
         return lang;
     }
 
+    /**
+     * Main method that imitates the main method.
+     * @param args
+     * @throws Exception
+     */
     public static void main( String[] args ) throws Exception {
         System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
         new App().main();
