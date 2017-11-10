@@ -1,16 +1,19 @@
 package orminnlevering;
 
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.logger.LocalLog;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableInfo;
+import com.j256.ormlite.table.TableUtils;
 import orminnlevering.dto.City;
 import orminnlevering.dto.Country;
 import orminnlevering.dto.CountryLanguage;
 import orminnlevering.handler.Connection;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.After;
@@ -23,21 +26,30 @@ import static org.junit.Assert.*;
  * Simple test for ORMlite
  */
 public class AppTest{
+    private String dbName;
     private App app;
     private ConnectionSource connectionSource;
 
     @Before
-    public void setup() throws SQLException {
+    public void setup() throws SQLException, IOException {
         System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
         app = new App();
         connectionSource = Connection.getConnection();
         app.initDao(connectionSource);
         app.createTables(connectionSource);
+
+        //setDBName();
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() throws IOException, SQLException {
+        //TableUtils.dropTable(connectionSource, City.class, false);
+        //TableUtils.dropTable(connectionSource, Country.class, false);
+        //TableUtils.dropTable(connectionSource, CountryLanguage.class, false);
+
         connectionSource.close();
+
+        //reSetDBName();
     }
 
     @Test
@@ -88,32 +100,56 @@ public class AppTest{
         cl.stream().forEach(e -> {
             assertTrue(e.getCountry().getCode().equals("XNL"));
         });
+
+        app.deleteElements();
     }
 
     @Test
     public void updateElementsTest() throws SQLException {
+        app.createElements();
         app.updateElements();
 
         List<City> cities = app.cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
         List<CountryLanguage> cl = app.countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
 
-        //assertTrue(cities.size() == 2);
+        assertTrue(cities.size() == 2);
         assertTrue(cities.get(1).getName().equals("Oldest city"));
 
-        //assertTrue(cl.size() == 2);
+        assertTrue(cl.size() == 2);
         assertTrue(cl.get(0).getLanguage().equals("NewerLanguage"));
+
+        app.deleteElements();
     }
 
     @Test
     public void deleteElementsTest() throws SQLException {
+        app.createElements();
+
+        List<City> cities = app.cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
+        assertTrue(cities.size() == 2);
+
         app.deleteElements();
 
         List<Country> countryItem = app.countryDao.queryForEq(Country.COUNTRY_CODE_FIELD_NAME, "XNL");
-        List<City> cities = app.cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
+        cities = app.cityDao.queryForEq(City.COUNTRY_CODE_FIELD_NAME, "XNL");
         List<CountryLanguage> cl = app.countryLanguageDao.queryForEq(CountryLanguage.COUNTRY_CODE_FIELD_NAME, "XNL");
 
         assertTrue(countryItem.size() == 0);
         assertTrue(cities.size() == 0);
         assertTrue(cl.size() == 0);
     }
+
+    /*public void setDBName() throws IOException {
+        Properties properties = new Properties();
+        InputStream input = new FileInputStream("data.properties");
+        properties.load(input);
+        dbName = properties.getProperty("db");
+        properties.setProperty("db", "worldORMtest");
+    }
+
+    public void reSetDBName() throws IOException {
+        Properties properties = new Properties();
+        OutputStream outputStream = new FileOutputStream("data.properties");
+        properties.setProperty("db", dbName);
+    }*/
 }
